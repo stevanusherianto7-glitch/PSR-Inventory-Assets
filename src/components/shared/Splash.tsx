@@ -24,7 +24,7 @@ export function Splash({ show }: SplashProps) {
             <img 
               src="/logo-512.png" 
               alt="Inventori Logo" 
-              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(255,193,7,0.3)]"
+              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(25,185,129,0.2)]"
               aria-hidden="true"
             />
           </motion.div>
