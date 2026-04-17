@@ -23,12 +23,9 @@ export function Splash({ show }: SplashProps) {
           >
             <img 
               src="/logo-512.png" 
-              alt="Pawon Salam Logo" 
-              className="w-full h-full object-cover rounded-[40px] shadow-[0_25px_50px_-12px_rgba(255,193,7,0.5)] border-4 border-white"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/food/512/512';
-              }}
+              alt="Inventori Logo" 
+              className="w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(255,193,7,0.3)]"
+              aria-hidden="true"
             />
           </motion.div>
           <motion.div
