@@ -1,0 +1,5 @@
+{
+  "name": "Kitchen Asset Manager",
+  "description": "Manage kitchen inventory in real-time.",
+  "requestFramePermissions": []
+}

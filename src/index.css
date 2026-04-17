@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #e11d48;
+  --color-primary-foreground: #ffffff;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-500: #3b82f6;
+  --color-blue-50: #eff6ff;
+  --color-emerald-600: #059669;
+  --color-emerald-50: #ecfdf5;
+  --color-white: #ffffff;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-500: #64748b;
+  --color-rose-500: #e11d48;
+  --color-rose-50: #fff1f2;
+  --color-slate-200: #e2e8f0;
+  --delay-0: 0ms;
+  --delay-150: 150ms;
+  --delay-300: 300ms;
+}
+
+.delay-150 { animation-delay: 150ms; }
+.delay-300 { animation-delay: 300ms; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@layer base {
+  @media print {
+    @page {
+      size: 57mm auto;
+      margin: 0;
+    }
+    
+    body {
+      width: 57mm;
+      margin: 0;
+      padding: 0;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-size: 10px;
+    }
+
+    .print-receipt {
+      width: 54mm; /* Slightly smaller for padding */
+      margin: 0 auto;
+      padding: 2mm 0;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    
+    .print-dashed {
+      border-top: 1px dashed #000000;
+      margin: 2mm 0;
+    }
+
+    /* Hide UI elements from print */
+    .print\:hidden {
+      display: none !important;
+    }
+  }
+}
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}

@@ -1,0 +1,27 @@
+import { InventoryItem } from '../types';
+
+export const initialItems: InventoryItem[] = [
+  { id: '1', name: 'WAJAN / WOOK 45 CM', category: 'Kitchen', quantity: 2, price: 50000 },
+  { id: '2', name: 'WAJAN / WOOK 30 CM', category: 'Kitchen', quantity: 2, price: 50000 },
+  { id: '3', name: 'PAN KECIL & SEDANG', category: 'Kitchen', quantity: 4, price: 50000 },
+  { id: '4', name: 'PANCI STAINLES 16QT', category: 'Kitchen', quantity: 3, price: 50000 },
+  { id: '5', name: 'PANCI STAINLES 18QT', category: 'Kitchen', quantity: 1, price: 50000 },
+  { id: '6', name: 'PANCI STAINLES 20QT', category: 'Kitchen', quantity: 1, price: 50000 },
+  { id: '7', name: 'SPATULA', category: 'Kitchen', quantity: 4, price: 20000 },
+  { id: '8', name: 'SODET', category: 'Kitchen', quantity: 2, price: 20000 },
+  { id: '9', name: 'SARINGAN MINYAK', category: 'Kitchen', quantity: 1, price: 30000 },
+  { id: '10', name: 'PISAU DAPUR, GUNITNG', category: 'Kitchen', quantity: 1, price: 100000 },
+  { id: '11', name: 'BLENDER PHILIPS', category: 'Kitchen', quantity: 1, price: 500000 },
+  { id: '12', name: 'CENTONG SAYUR', category: 'Kitchen', quantity: 2, price: 15000 },
+  { id: '13', name: 'SARINGAN STAINLES', category: 'Kitchen', quantity: 1, price: 30000 },
+  { id: '14', name: 'STOPLES PLASTIK BUMBU', category: 'Kitchen', quantity: 10, price: 10000 },
+  { id: '15', name: 'WADAH SENDOK GARPU', category: 'Kitchen', quantity: 1, price: 20000 },
+  { id: '16', name: 'ANEKA UKURAN STOPLES PLASTIK SEGALA UKURAN', category: 'Kitchen', quantity: 10, price: 10000 },
+  { id: '17', name: 'KIPAS ANGIN TINNGI', category: 'Kitchen', quantity: 1, price: 300000 },
+  { id: '18', name: 'KIPAS ANGIN PENDEK', category: 'Kitchen', quantity: 1, price: 200000 },
+  { id: '19', name: 'TAKARAN AIR', category: 'Kitchen', quantity: 2, price: 10000 },
+  { id: '20', name: 'WADAH KECAP', category: 'Kitchen', quantity: 2, price: 10000 },
+  { id: '21', name: 'PLASTIK WRAP', category: 'Kitchen', quantity: 1, price: 25000 },
+  { id: '22', name: 'KOMPOR HIGH PRESURE', category: 'Kitchen', quantity: 1, price: 1600000 },
+  { id: '23', name: 'KOMPOR MATA SERIBU', category: 'Kitchen', quantity: 1, price: 700000 },
+];
