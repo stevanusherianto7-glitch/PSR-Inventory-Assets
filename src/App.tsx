@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileDown, Printer, Check } from 'lucide-react';
+import { FileDown, Printer, Check, Moon, Sun } from 'lucide-react';
 import { useInventory } from './hooks/useInventory';
 import { usePOS } from './hooks/usePOS';
 import { usePWA } from './hooks/usePWA';
@@ -20,6 +20,18 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<CategoryType>('Kitchen');
   const [showSplash, setShowSplash] = useState(true);
   const [showToast, setShowToast] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   const {
     items,
@@ -61,7 +73,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans pb-20 transition-colors duration-300">
       <Splash show={showSplash} />
       
       <PWAInstallBar 
@@ -72,17 +84,26 @@ export default function App() {
         onInstall={handleInstallClick}
       />
 
-      <header className="sticky top-0 z-10 bg-white shadow-sm border-b border-slate-200">
-        <div className="flex overflow-x-auto no-scrollbar border-b border-slate-100">
-          {(['Inventory', 'POS', 'History', 'Expenses'] as const).map((v) => (
-            <button 
-              key={v} 
-              onClick={() => setActiveView(v)} 
-              className={`flex-1 p-4 font-bold whitespace-nowrap text-sm ${activeView === v ? 'bg-slate-100 text-blue-600 border-b-2 border-blue-600' : 'text-slate-500'}`}
-            >
-              {v}
-            </button>
-          ))}
+      <header className="sticky top-0 z-10 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center border-b border-slate-100 dark:border-slate-700">
+          <div className="flex-1 flex overflow-x-auto no-scrollbar">
+            {(['Inventory', 'POS', 'History', 'Expenses'] as const).map((v) => (
+              <button 
+                key={v} 
+                onClick={() => setActiveView(v)} 
+                className={`px-5 py-4 font-bold whitespace-nowrap text-sm ${activeView === v ? 'bg-slate-50 dark:bg-slate-900 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-500 dark:text-slate-400'}`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+          <button 
+            onClick={() => setIsDark(!isDark)}
+            className="p-4 text-slate-500 dark:text-yellow-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            aria-label="Toggle Theme"
+          >
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
         </div>
       </header>
 

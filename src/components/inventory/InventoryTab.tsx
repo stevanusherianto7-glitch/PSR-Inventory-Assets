@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Plus, Trash2, Minus, Package, DollarSign, Pencil, Check } from 'lucide-react';
+import { Plus, Trash2, Minus, Package, DollarSign, Pencil, Check, Search, Table } from 'lucide-react';
 import { InventoryItem, CategoryType } from '../../types';
 import { formatCurrency, formatNumber, parseNumber } from '../../utils/formatters';
+import { exportToExcel } from '../../utils/excelGenerator';
 
 interface InventoryTabProps {
   items: InventoryItem[];
@@ -28,8 +28,28 @@ export function InventoryTab({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editPrice, setEditPrice] = useState<number | ''>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredItems = useMemo(() => items.filter(item => item.category === activeTab), [items, activeTab]);
+  const filteredItems = useMemo(() => 
+    items.filter(item => 
+      item.category === activeTab && 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ), 
+    [items, activeTab, searchTerm]
+  );
+  
+  const handleExport = () => {
+    const exportData = filteredItems.map(item => ({
+      'Nama Item': item.name,
+      'Kategori': item.category,
+      'Stok': item.quantity,
+      'Harga Satuan': item.price,
+      'Total Nilai': item.quantity * item.price
+    }));
+    exportToExcel(exportData, `Inventaris_${activeTab}_${new Date().toISOString().split('T')[0]}`);
+  };
+
+  const handleAdd = async () => {
   const totalSku = useMemo(() => filteredItems.length, [filteredItems]);
   const totalQty = useMemo(() => filteredItems.reduce((sum, item) => sum + Number(item.quantity || 0), 0), [filteredItems]);
   const totalValue = useMemo(() => filteredItems.reduce((sum, item) => sum + (Number(item.quantity || 0) * Number(item.price || 0)), 0), [filteredItems]);
@@ -66,7 +86,7 @@ export function InventoryTab({
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-blue-600 text-white p-4 rounded-2xl shadow-md">
+        <div className="bg-blue-600 dark:bg-blue-700 text-white p-4 rounded-2xl shadow-md">
           <div className="flex items-center gap-2 mb-1 opacity-80">
             <Package size={18} />
             <span className="text-sm font-medium">Total Items</span>
@@ -74,7 +94,7 @@ export function InventoryTab({
           <div className="text-3xl font-bold">{totalSku}</div>
           <div className="text-[10px] opacity-70 mt-1">({totalQty} unit)</div>
         </div>
-        <div className="bg-emerald-600 text-white p-4 rounded-2xl shadow-md">
+        <div className="bg-emerald-600 dark:bg-emerald-700 text-white p-4 rounded-2xl shadow-md">
           <div className="flex items-center gap-2 mb-1 opacity-80">
             <DollarSign size={18} />
             <span className="text-sm font-medium">Total Value</span>
@@ -84,7 +104,29 @@ export function InventoryTab({
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Cari Asset..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          />
+        </div>
+        <button 
+          onClick={handleExport}
+          className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800 hover:bg-emerald-100 transition-colors"
+          title="Export to Excel"
+          aria-label="Export to Excel"
+        >
+          <Table size={20} />
+        </button>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-3">
+
         <input 
           type="text" 
           placeholder="NAMA ITEM (Ketik 30 CM bisa)" 

@@ -12,21 +12,40 @@
   --color-emerald-600: #059669;
   --color-emerald-50: #ecfdf5;
   --color-white: #ffffff;
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-900: #0f172a;
-  --color-slate-800: #1e293b;
-  --color-slate-500: #64748b;
-  --color-rose-500: #e11d48;
-  --color-rose-50: #fff1f2;
   --color-slate-200: #e2e8f0;
   --delay-0: 0ms;
   --delay-150: 150ms;
   --delay-300: 300ms;
+
+  /* Theme Colors */
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-main: #e2e8f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-main: #334155;
+  }
+}
+
+.dark {
+  --bg-main: #010409;
+  --bg-card: #0d1117;
+  --text-main: #f0f6fc;
+  --text-muted: #8b949e;
+  --border-main: #30363d;
 }
 
 .delay-150 { animation-delay: 150ms; }
 .delay-300 { animation-delay: 300ms; }
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

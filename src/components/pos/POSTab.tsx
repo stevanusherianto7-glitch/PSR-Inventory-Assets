@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Package, Plus, Minus } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Package, Plus, Minus, Search } from 'lucide-react';
 import { InventoryItem, PaymentMethod } from '../../types';
 import { formatCurrency, formatNumber, parseNumber } from '../../utils/formatters';
 
@@ -22,6 +22,14 @@ export function POSTab({
 }: POSTabProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Tunai');
   const [cashReceived, setCashReceived] = useState<number | ''>('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredItems = useMemo(() => 
+    items.filter(item => 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ), 
+    [items, searchTerm]
+  );
 
   const handleCheckout = () => {
     const total = cart.reduce((sum, item) => sum + (item.qty * item.price), 0);
@@ -39,21 +47,33 @@ export function POSTab({
 
   return (
     <div className="p-4 space-y-4">
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 uppercase">
-        <h2 className="font-black mb-3 flex items-center gap-2"><Package size={18} className="text-blue-600"/> Daftar Menu</h2>
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 uppercase">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-black flex items-center gap-2 dark:text-slate-100"><Package size={18} className="text-blue-600"/> Daftar Menu</h2>
+          <div className="relative w-1/2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <input 
+              type="text" 
+              placeholder="Cari Menu..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-[10px] font-black"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-1 uppercase">
-          {items.length === 0 ? (
-            <p className="col-span-2 text-center text-slate-400 text-xs py-4 italic">Belum ada menu di Inventaris</p>
+          {filteredItems.length === 0 ? (
+            <p className="col-span-2 text-center text-slate-400 text-xs py-4 italic">Menu tidak ditemukan</p>
           ) : (
-            items.map(item => (
+            filteredItems.map(item => (
               <button 
                 key={item.id} 
                 onClick={() => addToCart(item)}
-                className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-left active:bg-blue-50 transition-colors"
+                className="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-left active:bg-blue-50 dark:active:bg-blue-900/30 transition-colors"
                 disabled={item.quantity <= 0}
               >
-                <div className="font-black text-[10px] truncate leading-tight mb-1">{item.name}</div>
-                <div className="text-[11px] text-blue-600 font-black">{formatCurrency(item.price)}</div>
+                <div className="font-black text-[10px] truncate leading-tight mb-1 dark:text-slate-200">{item.name}</div>
+                <div className="text-[11px] text-blue-600 dark:text-blue-400 font-black">{formatCurrency(item.price)}</div>
                 <div className="text-[9px] text-slate-400 font-medium">STOK: {item.quantity}</div>
               </button>
             ))
@@ -61,37 +81,25 @@ export function POSTab({
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
         <h2 className="font-black mb-3 flex items-center gap-2 text-rose-600 uppercase"><Plus size={18}/> Keranjang</h2>
         {cart.length === 0 ? (
-          <p className="text-center text-slate-400 text-xs py-10 border border-dashed rounded-xl italic">Keranjang kosong</p>
+          <p className="text-center text-slate-400 dark:text-slate-500 text-xs py-10 border border-dashed rounded-xl italic">Keranjang kosong</p>
         ) : (
           <div className="space-y-3 mb-4">
             {cart.map(c => (
               <div key={c.id} className="flex items-center justify-between text-xs">
-                <div className="flex-1 truncate uppercase pr-2 font-bold text-slate-700">{c.name}</div>
-                <div className="flex items-center gap-2 bg-slate-100 rounded-full px-2 py-1">
-                  <button 
-                    onClick={() => removeFromCart(c.id)} 
-                    className="text-slate-500 hover:text-rose-500"
-                    aria-label="Kurangi Jumlah"
-                  >
-                    <Minus size={14}/>
-                  </button>
-                  <span className="font-black min-w-[24px] text-center">{c.qty}</span>
-                  <button 
-                    onClick={() => addToCart(items.find(i => i.id === c.id)!)} 
-                    className="text-slate-500 hover:text-emerald-500"
-                    aria-label="Tambah Jumlah"
-                  >
-                    <Plus size={14}/>
-                  </button>
+                <div className="flex-1 truncate uppercase pr-2 font-bold text-slate-700 dark:text-slate-300">{c.name}</div>
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 rounded-full px-2 py-1">
+                  <button onClick={() => removeFromCart(c.id)} className="text-slate-500 hover:text-rose-500" aria-label="Kurangi Jumlah"><Minus size={14}/></button>
+                  <span className="font-black min-w-[24px] text-center dark:text-slate-200">{c.qty}</span>
+                  <button onClick={() => addToCart(items.find(i => i.id === c.id)!)} className="text-slate-500 hover:text-emerald-500" aria-label="Tambah Jumlah"><Plus size={14}/></button>
                 </div>
-                <div className="w-[85px] text-right font-black text-slate-900 ml-2">{formatCurrency(c.qty * c.price)}</div>
+                <div className="w-[85px] text-right font-black text-slate-900 dark:text-slate-100 ml-2">{formatCurrency(c.qty * c.price)}</div>
               </div>
             ))}
-            <div className="pt-3 border-t-2 border-dashed mt-3 flex justify-between items-center bg-slate-50 p-3 rounded-xl border-slate-200">
-              <span className="font-black text-sm text-slate-500">TOTAL:</span>
+            <div className="pt-3 border-t-2 border-dashed mt-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border-slate-200 dark:border-slate-800">
+              <span className="font-black text-sm text-slate-500 uppercase">TOTAL:</span>
               <span className="font-black text-rose-600 text-xl">{formatCurrency(cart.reduce((s, i) => s + (i.qty * i.price), 0))}</span>
             </div>
           </div>
@@ -99,12 +107,12 @@ export function POSTab({
 
         {cart.length > 0 && (
           <div className="space-y-4 pt-2">
-            <div className="flex gap-2 p-1 bg-slate-100 rounded-2xl">
+            <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl">
               {(['Tunai', 'QRIS'] as const).map(m => (
                 <button 
                   key={m} 
                   onClick={() => setPaymentMethod(m)} 
-                  className={`flex-1 py-3 rounded-xl font-black text-[11px] transition-all uppercase tracking-wider ${paymentMethod === m ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-200'}`}
+                  className={`flex-1 py-3 rounded-xl font-black text-[11px] transition-all uppercase tracking-wider ${paymentMethod === m ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800'}`}
                 >
                   {m}
                 </button>
@@ -120,7 +128,7 @@ export function POSTab({
                   placeholder="JUMLAH DITERIMA" 
                   value={formatNumber(cashReceived)} 
                   onChange={(e) => setCashReceived(Number(parseNumber(e.target.value)))}
-                  className="w-full p-4 pl-12 bg-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-lg font-black"
+                  className="w-full p-4 pl-12 bg-slate-100 dark:bg-slate-900 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-lg font-black dark:text-slate-100"
                 />
               </div>
             )}
