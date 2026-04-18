@@ -63,14 +63,16 @@ export default function App() {
   } = usePWA();
 
   const [toastMessage, setToastMessage] = useState('Berhasil!');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
-  const triggerToast = (msg: string = 'Berhasil!') => {
+  const triggerToast = (msg: string = 'Berhasil!', type: 'success' | 'error' = 'success') => {
     setToastMessage(msg);
+    setToastType(type);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
@@ -184,8 +186,8 @@ export default function App() {
 
       {showToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce">
-          <div className="bg-emerald-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
-            <Check size={20} />
+          <div className={`${toastType === 'success' ? 'bg-emerald-600' : 'bg-rose-600'} text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2`}>
+            {toastType === 'success' ? <Check size={20} /> : <span className="font-bold">X</span>}
             <span className="font-semibold">{toastMessage}</span>
           </div>
         </div>

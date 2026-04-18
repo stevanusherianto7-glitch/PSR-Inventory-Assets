@@ -96,31 +96,35 @@ export function useInventory() {
 
   const updateQuantity = async (id: string, delta: number) => {
     const item = items.find(i => i.id === id);
-    if (!item) return;
+    if (!item) return false;
     const newQuantity = Math.max(0, Number(item.quantity || 0) + delta);
     
     if (!supabase) {
       setItems(items.map(i => i.id === id ? { ...i, quantity: newQuantity } : i));
-      return;
+      return true;
     }
     const { error } = await supabase.from('items').update({ quantity: newQuantity }).eq('id', id);
     if (error) {
       console.error('Error updating quantity:', error);
+      return false;
     } else {
       setItems(items.map(i => i.id === id ? { ...i, quantity: newQuantity } : i));
+      return true;
     }
   };
 
   const deleteItem = async (id: string) => {
     if (!supabase) {
       setItems(items.filter(item => item.id !== id));
-      return;
+      return true;
     }
     const { error } = await supabase.from('items').delete().eq('id', id);
     if (error) {
       console.error('Error deleting item:', error);
+      return false;
     } else {
       setItems(items.filter(item => item.id !== id));
+      return true;
     }
   };
 

@@ -10,9 +10,9 @@ interface InventoryTabProps {
   setActiveTab: (tab: CategoryType) => void;
   addItem: (name: string, category: CategoryType, quantity: number, price: number) => Promise<boolean>;
   updateQuantity: (id: string, delta: number) => Promise<void>;
-  deleteItem: (id: string) => Promise<void>;
+  deleteItem: (id: string) => Promise<boolean | void>; // make it flexible
   saveEdit: (id: string, name: string, price: number) => Promise<boolean>;
-  onSuccess?: (msg?: string) => void;
+  onSuccess?: (msg?: string, type?: 'success' | 'error') => void;
 }
 
 export function InventoryTab({
@@ -168,26 +168,27 @@ export function InventoryTab({
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-4">
         {filteredItems.length === 0 && searchTerm ? (
           <div className="text-center py-12 text-slate-400 dark:text-slate-600 italic text-sm">
             Tidak ada aset yang cocok dengan "{searchTerm}"
           </div>
         ) : null}
+        
         {filteredItems.map(item => (
-          <div key={item.id} className="bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
-            <div className="flex-1 min-w-0 pr-2">
-              {editingId === item.id ? (
-                <div className="space-y-1">
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="input-uppercase font-semibold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-900 p-1 rounded text-sm w-full outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="Nama Item"
-                  />
-                  <div className="relative flex items-center">
-                    <span className="absolute left-1 text-[10px] text-slate-400">Rp</span>
+          <div key={item.id} className="bg-white dark:bg-slate-800 p-4 rounded-3xl shadow-sm hover:shadow-md border border-slate-100 dark:border-slate-700 transition-shadow">
+            {editingId === item.id ? (
+              <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="input-uppercase text-base font-bold text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-3 rounded-xl w-full outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Nama Item"
+                />
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rp</span>
                     <input
                       type="text"
                       inputMode="numeric"
@@ -196,72 +197,102 @@ export function InventoryTab({
                         const raw = parseNumber(e.target.value);
                         setEditPrice(raw === '' ? '' : Number(raw));
                       }}
-                      className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 p-1 pl-5 rounded w-full outline-none focus:ring-1 focus:ring-blue-500"
-                      placeholder="Harga"
+                      className="text-base text-slate-800 dark:text-slate-100 font-semibold bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-3 pl-10 rounded-xl w-full outline-none focus:ring-2 focus:ring-emerald-500"
+                      placeholder="Harga Satuan"
                     />
                   </div>
                 </div>
-              ) : (
-                <>
-                  <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm truncate">{item.name}</h3>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">{formatCurrency(item.price)} / unit</p>
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center bg-slate-50 dark:bg-slate-900 rounded-full p-1 border border-slate-100 dark:border-slate-700">
-                <button
-                  onClick={() => updateQuantity(item.id, -1)}
-                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full text-slate-600 dark:text-slate-400 transition-colors"
-                  aria-label="Kurangi Jumlah"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="font-bold text-xs w-6 text-center dark:text-slate-100">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, 1)}
-                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full text-slate-600 dark:text-slate-400 transition-colors"
-                  aria-label="Tambah Jumlah"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-              <div className="flex items-center gap-1">
-                {editingId === item.id ? (
-                  <button
-                    onClick={() => handleSaveEdit(item.id)}
-                    className="p-1.5 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-full transition-colors"
-                    aria-label="Simpan Edit"
-                  >
-                    <Check size={16} />
+                <div className="flex gap-2 pt-1">
+                  <button onClick={() => setEditingId(null)} className="flex-[0.4] p-3 rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition-colors">
+                    Batal
                   </button>
-                ) : (
-                  <button
-                    onClick={() => startEdit(item)}
-                    className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition-colors"
-                    aria-label="Edit Item"
-                  >
-                    <Pencil size={16} />
+                  <button onClick={() => handleSaveEdit(item.id)} className="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 active:scale-95 transition-all">
+                    <Check size={18} strokeWidth={3} /> Simpan Perubahan
                   </button>
-                )}
-                <button
-                  onClick={async () => {
-                    const isConfirmed = window.confirm(`Anda yakin ingin menghapus ${item.name}?`);
-                    if (isConfirmed) {
-                      await deleteItem(item.id);
-                      if (onSuccess) onSuccess('Dihapus');
-                    }
-                  }}
-                  className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-full transition-colors"
-                  aria-label="Hapus Item"
-                >
-                  <Trash2 size={16} />
-                </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-3 animate-in fade-in duration-200">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0 pr-2">
+                    <h3 className="font-bold text-slate-800 dark:text-slate-100 text-[16px] truncate leading-tight">{item.name}</h3>
+                    <p className="text-[12px] font-medium text-slate-500 dark:text-slate-400 mt-1">{formatCurrency(item.price)} / unit</p>
+                  </div>
+                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl">
+                    <button
+                      onClick={() => startEdit(item)}
+                      className="p-2 text-blue-600 bg-white dark:bg-slate-800 shadow-sm rounded-lg hover:text-blue-700 transition-colors active:scale-95"
+                      aria-label="Edit Item"
+                    >
+                      <Pencil size={18} strokeWidth={2.5} />
+                    </button>
+                    <button
+                      onClick={() => setItemToDelete(item)}
+                      className="p-2 text-rose-500 bg-white dark:bg-slate-800 shadow-sm rounded-lg hover:text-rose-600 transition-colors active:scale-95"
+                      aria-label="Hapus Item"
+                    >
+                      <Trash2 size={18} strokeWidth={2.5} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-3 mt-1">
+                  <div className="text-sm font-semibold text-slate-600 dark:text-slate-400">Total Stok</div>
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 rounded-xl p-1 shadow-inner border border-slate-200 dark:border-slate-700">
+                    <button
+                      onClick={async () => {
+                        const success = await updateQuantity(item.id, -1);
+                        if (!success && onSuccess) onSuccess('Koneksi Gagal', 'error');
+                      }}
+                      className="p-2 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 active:scale-90 transition-all"
+                    >
+                      <Minus size={16} strokeWidth={3} />
+                    </button>
+                    <span className="font-black text-lg w-10 text-center text-slate-800 dark:text-slate-100">{item.quantity}</span>
+                    <button
+                      onClick={async () => {
+                        const success = await updateQuantity(item.id, 1);
+                        if (!success && onSuccess) onSuccess('Koneksi Gagal', 'error');
+                      }}
+                      className="p-2 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 active:scale-90 transition-all"
+                    >
+                      <Plus size={16} strokeWidth={3} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {itemToDelete && (
+        <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-sm p-6 shadow-2xl border border-slate-100 dark:border-slate-700 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-500">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-center text-slate-800 dark:text-slate-100 mb-2">Hapus Aset Ini?</h3>
+            <p className="text-center text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed">
+              Anda yakin ingin membuang <b>{itemToDelete.name}</b> dari gudang secara permanen?
+            </p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setItemToDelete(null)}
+                className="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 transition-colors"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 py-3.5 rounded-xl font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-500/30 transition-all active:scale-95"
+              >
+                Ya, Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
