@@ -14,9 +14,9 @@ export default defineConfig(({mode}) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.png', 'logo-192.png', 'logo-512.png'],
         manifest: {
-          name: 'Asset Manager - Pawon Salam',
-          short_name: 'Pawon Salam',
-          description: 'Manajemen Aset Kitchen dan Mini Bar Pawon Salam Resto',
+          name: 'InventoriGo',
+          short_name: 'InventoriGo',
+          description: 'Sistem Manajemen Inventori Real-time InventoriGo',
           theme_color: '#FFC107',
           background_color: '#ffffff',
           display: 'standalone',

@@ -34,7 +34,7 @@ export function Splash({ show }: SplashProps) {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Asset Manager</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">InventoriGo</h1>
             <p className="text-slate-500 text-sm mt-1">Kitchen & Mini Bar Inventory</p>
           </motion.div>
           <motion.div 
