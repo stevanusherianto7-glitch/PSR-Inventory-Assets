@@ -31,6 +31,15 @@ export default function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    
+    // Dynamic Theme Color for Android/Safari
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (!metaThemeColor) {
+      metaThemeColor = document.createElement('meta');
+      (metaThemeColor as any).name = 'theme-color';
+      document.getElementsByTagName('head')[0].appendChild(metaThemeColor);
+    }
+    metaThemeColor.setAttribute('content', isDark ? '#010409' : '#ffffff');
   }, [isDark]);
 
   const {
