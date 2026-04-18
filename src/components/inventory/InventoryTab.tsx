@@ -246,8 +246,11 @@ export function InventoryTab({
                 )}
                 <button
                   onClick={async () => {
-                    await deleteItem(item.id);
-                    if (onSuccess) onSuccess('Dihapus');
+                    const isConfirmed = window.confirm(`Anda yakin ingin menghapus ${item.name}?`);
+                    if (isConfirmed) {
+                      await deleteItem(item.id);
+                      if (onSuccess) onSuccess('Dihapus');
+                    }
                   }}
                   className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-full transition-colors"
                   aria-label="Hapus Item"
