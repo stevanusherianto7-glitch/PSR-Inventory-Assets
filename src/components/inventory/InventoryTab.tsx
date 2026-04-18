@@ -245,6 +245,7 @@ export function InventoryTab({
                         if (!success && onSuccess) onSuccess('Koneksi Gagal', 'error');
                       }}
                       className="p-2 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 active:scale-90 transition-all"
+                      aria-label="Kurangi Stok"
                     >
                       <Minus size={16} strokeWidth={3} />
                     </button>
@@ -255,6 +256,7 @@ export function InventoryTab({
                         if (!success && onSuccess) onSuccess('Koneksi Gagal', 'error');
                       }}
                       className="p-2 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 active:scale-90 transition-all"
+                      aria-label="Tambah Stok"
                     >
                       <Plus size={16} strokeWidth={3} />
                     </button>
