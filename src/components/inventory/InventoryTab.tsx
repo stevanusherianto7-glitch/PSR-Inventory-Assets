@@ -32,6 +32,18 @@ export function InventoryTab({
   const [editName, setEditName] = useState('');
   const [editPrice, setEditPrice] = useState<number | ''>('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    const success = await deleteItem(itemToDelete.id);
+    if (success) {
+      if (onSuccess) onSuccess('Aset Dihapus', 'success');
+    } else {
+      if (onSuccess) onSuccess('Koneksi Gagal', 'error');
+    }
+    setItemToDelete(null);
+  };
 
   const filteredItems = useMemo(() =>
     items.filter(item =>
