@@ -46,7 +46,6 @@
 .delay-150 { animation-delay: 150ms; }
 .delay-300 { animation-delay: 300ms; }
 
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
@@ -65,38 +64,36 @@
   background: #94a3b8;
 }
 
-@layer base {
-  @media print {
-    @page {
-      size: 57mm auto;
-      margin: 0;
-    }
-    
-    body {
-      width: 57mm;
-      margin: 0;
-      padding: 0;
-      background: #ffffff !important;
-      color: #000000 !important;
-      font-size: 10px;
-    }
+/* Print Styles for 57mm Thermal Receipt */
+@media print {
+  @page {
+    size: 57mm auto;
+    margin: 0;
+  }
 
-    .print-receipt {
-      width: 54mm; /* Slightly smaller for padding */
-      margin: 0 auto;
-      padding: 2mm 0;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    
-    .print-dashed {
-      border-top: 1px dashed #000000;
-      margin: 2mm 0;
-    }
+  body {
+    width: 57mm;
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10px;
+  }
 
-    /* Hide UI elements from print */
-    .print\:hidden {
-      display: none !important;
-    }
+  .print-receipt {
+    width: 54mm;
+    margin: 0 auto;
+    padding: 2mm 0;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  .print-dashed {
+    border-top: 1px dashed #000000;
+    margin: 2mm 0;
+  }
+
+  .print\:hidden {
+    display: none !important;
   }
 }
 
