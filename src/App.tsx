@@ -36,8 +36,8 @@ export default function App() {
     let metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (!metaThemeColor) {
       metaThemeColor = document.createElement('meta');
-      (metaThemeColor as any).name = 'theme-color';
-      document.getElementsByTagName('head')[0].appendChild(metaThemeColor);
+      metaThemeColor.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaThemeColor);
     }
     metaThemeColor.setAttribute('content', isDark ? '#010409' : '#ffffff');
   }, [isDark]);
