@@ -93,7 +93,9 @@ export function InventoryTab({
     const success = await saveEdit(id, editName.toUpperCase(), Number(editPrice));
     if (success) {
       setEditingId(null);
-      if (onSuccess) onSuccess('Tersimpan');
+      if (onSuccess) onSuccess('Aset Diperbarui', 'success');
+    } else {
+      if (onSuccess) onSuccess('Gagal menyimpan perubahan, periksa koneksi', 'error');
     }
   };
 
