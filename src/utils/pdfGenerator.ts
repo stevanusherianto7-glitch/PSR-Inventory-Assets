@@ -155,10 +155,20 @@ export const savePDF = async (items: InventoryItem[]) => {
     // 3. Output as Blob URL (Printer Browser Method)
     const pdfBlob = doc.output('blob');
     const blobUrl = URL.createObjectURL(pdfBlob);
-    window.open(blobUrl, '_blank');
+    const win = window.open(blobUrl, '_blank');
     
-    // Cleanup
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      // Fallback: If pop-up is blocked, trigger a direct download
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `Laporan_Aset_Resto_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    // Keep the URL alive for 1 minute to ensure the browser can load it
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 
   } catch (error) {
     console.error("PDF Generation Error:", error);
