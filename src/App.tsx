@@ -98,7 +98,7 @@ export default function App() {
         onInstall={handleInstallClick}
       />
 
-      <header className="sticky top-0 z-10 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
+      <header id="header" className="sticky top-0 z-10 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center border-b border-slate-100 dark:border-slate-700">
           <div className="flex-1 flex overflow-x-auto no-scrollbar">
             {(['Inventory', 'POS', 'History', 'Expenses'] as const).map((v) => (
