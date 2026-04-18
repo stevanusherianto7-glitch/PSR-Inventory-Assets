@@ -20,17 +20,27 @@ export default defineConfig(({mode}) => {
           theme_color: '#FFC107',
           background_color: '#ffffff',
           display: 'standalone',
+          start_url: '/',
+          scope: '/',
+          id: '/',
           icons: [
             {
               src: 'logo-192.png',
               sizes: '192x192',
               type: 'image/png',
-              purpose: 'any maskable'
+              purpose: 'any'
+            },
+            {
+              src: 'logo-192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable'
             },
             {
               src: 'logo-512.png',
               sizes: '512x512',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any'
             }
           ]
         }
