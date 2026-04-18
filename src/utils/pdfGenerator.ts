@@ -68,11 +68,28 @@ export const savePDF = async (items: InventoryItem[]) => {
 
     if (headerEl) {
       const canvas = await html2canvas(headerEl, {
-        scale: 2,
+        scale: 3, // High-fidelity scaling
         useCORS: true,
-        backgroundColor: null,
+        logging: false,
+        backgroundColor: '#ffffff', // Force white background
         onclone: (clonedDoc) => {
-          rgbForceFix(clonedDoc);
+          const header = clonedDoc.getElementById('header');
+          if (header) {
+            header.style.backgroundColor = '#ffffff';
+            header.style.color = '#000000';
+            
+            // Hide navigation buttons and theme toggle in PDF
+            const navElements = header.querySelectorAll('button, .flex.items-center:last-child');
+            navElements.forEach((el) => {
+              (el as HTMLElement).style.display = 'none';
+            });
+
+            // Ensure branding text is dark
+            const brandingText = header.querySelectorAll('h1, span');
+            brandingText.forEach((el) => {
+              (el as HTMLElement).style.color = '#0f172a';
+            });
+          }
         }
       });
       

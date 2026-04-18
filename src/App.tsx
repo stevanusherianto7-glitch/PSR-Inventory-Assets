@@ -98,14 +98,27 @@ export default function App() {
         onInstall={handleInstallClick}
       />
 
-      <header id="header" className="sticky top-0 z-10 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="flex items-center border-b border-slate-100 dark:border-slate-700">
+      <header id="header" className="sticky top-0 z-10 bg-white dark:bg-slate-800 shadow-md border-b border-slate-200 dark:border-slate-700">
+        {/* Branding Section for PDF & UI */}
+        <div className="px-5 py-4 flex items-center gap-3 border-b border-slate-50 dark:border-slate-700/50">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 dark:shadow-none">
+            <Printer size={22} strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black tracking-tighter leading-none text-slate-900 dark:text-white">
+              PS<span className="text-blue-600 dark:text-blue-400">Resto</span>
+            </h1>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asset Manager</span>
+          </div>
+        </div>
+
+        <div className="flex items-center">
           <div className="flex-1 flex overflow-x-auto no-scrollbar">
             {(['Inventory', 'POS', 'History', 'Expenses'] as const).map((v) => (
               <button 
                 key={v} 
                 onClick={() => setActiveView(v)} 
-                className={`px-5 py-4 font-bold whitespace-nowrap text-sm ${activeView === v ? 'bg-slate-50 dark:bg-slate-900 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-500 dark:text-slate-400'}`}
+                className={`px-5 py-4 font-bold whitespace-nowrap text-sm transition-all ${activeView === v ? 'bg-slate-50/50 dark:bg-slate-900/50 text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-500 dark:text-slate-400'}`}
               >
                 {v}
               </button>
