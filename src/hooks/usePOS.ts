@@ -18,47 +18,60 @@ export function usePOS(items: InventoryItem[], setItems: (items: InventoryItem[]
 
       if (savedPettyCash) setPettyCash(Number(savedPettyCash));
 
+      let localTs: Transaction[] = [];
+      let localEx: Expense[] = [];
+      if (savedTransactions) {
+        try { localTs = JSON.parse(savedTransactions); } catch(e) {}
+      }
+      if (savedExpenses) {
+        try { localEx = JSON.parse(savedExpenses); } catch(e) {}
+      }
+
       if (!supabase) {
-        if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
-        if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
+        if (localTs.length > 0) setTransactions(localTs);
+        if (localEx.length > 0) setExpenses(localEx);
         setLoading(false);
         return;
       }
 
       // 1. Transactions Fetch & Migration
       const { data: remoteTs, error: tError } = await supabase.from('transactions').select('*').order('timestamp', { ascending: false });
-      if (!tError && remoteTs && remoteTs.length > 0) {
+      if (tError) {
+        console.error('Fetch error TS, using local cache:', tError);
+        if (localTs.length > 0) setTransactions(localTs);
+      } else if (remoteTs && remoteTs.length > 0) {
         setTransactions(remoteTs);
-      } else if (savedTransactions) {
+      } else if (savedTransactions && localTs.length > 0) {
         // Migration
         try {
-          const parsed = JSON.parse(savedTransactions);
-          const { data: insertedData, error: migError } = await supabase.from('transactions').insert(parsed).select();
+          const { data: insertedData, error: migError } = await supabase.from('transactions').insert(localTs).select();
           if (!migError) {
             setTransactions(insertedData || []);
-            localStorage.removeItem('transactions');
           } else {
-            setTransactions(parsed);
+            console.error('T-Migration error:', migError);
+            setTransactions(localTs);
           }
-        } catch (e) { console.error('T-Migration error:', e); }
+        } catch (e) { console.error('T-Migration caught error:', e); setTransactions(localTs); }
       }
 
       // 2. Expenses Fetch & Migration
       const { data: remoteEx, error: eError } = await supabase.from('expenses').select('*').order('timestamp', { ascending: false });
-      if (!eError && remoteEx && remoteEx.length > 0) {
+      if (eError) {
+        console.error('Fetch error EX, using local cache:', eError);
+        if (localEx.length > 0) setExpenses(localEx);
+      } else if (remoteEx && remoteEx.length > 0) {
         setExpenses(remoteEx);
-      } else if (savedExpenses) {
+      } else if (savedExpenses && localEx.length > 0) {
         // Migration
         try {
-          const parsed = JSON.parse(savedExpenses);
-          const { data: insertedEx, error: migExError } = await supabase.from('expenses').insert(parsed).select();
+          const { data: insertedEx, error: migExError } = await supabase.from('expenses').insert(localEx).select();
           if (!migExError) {
             setExpenses(insertedEx || []);
-            localStorage.removeItem('expenses');
           } else {
-            setExpenses(parsed);
+            console.error('E-Migration error:', migExError);
+            setExpenses(localEx);
           }
-        } catch (e) { console.error('E-Migration error:', e); }
+        } catch (e) { console.error('E-Migration caught error:', e); setExpenses(localEx); }
       }
 
       setLoading(false);
@@ -69,6 +82,18 @@ export function usePOS(items: InventoryItem[], setItems: (items: InventoryItem[]
   useEffect(() => {
     localStorage.setItem('petty-cash', pettyCash.toString());
   }, [pettyCash]);
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+    }
+  }, [transactions]);
+
+  useEffect(() => {
+    if (expenses.length > 0) {
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+    }
+  }, [expenses]);
 
   const addToCart = (item: InventoryItem) => {
     const existing = cart.find(i => i.id === item.id);

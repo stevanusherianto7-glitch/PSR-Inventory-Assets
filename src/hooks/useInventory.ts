@@ -11,17 +11,18 @@ export function useInventory() {
     const fetchData = async () => {
       setLoading(true);
       const savedItems = localStorage.getItem('kitchen-inventory');
+      
+      let localItems = initialItems;
+      if (savedItems) {
+        try {
+          localItems = JSON.parse(savedItems);
+        } catch (e) {
+          console.error("Local storage parsing error");
+        }
+      }
 
       if (!supabase) {
-        if (savedItems) {
-          try {
-            setItems(JSON.parse(savedItems));
-          } catch (e) {
-            setItems(initialItems);
-          }
-        } else {
-          setItems(initialItems);
-        }
+        setItems(localItems);
         setLoading(false);
         return;
       }
@@ -30,16 +31,15 @@ export function useInventory() {
       const { data, error } = await supabase.from('items').select('*');
       
       if (error) {
-        console.error('Error fetching items from Supabase:', error);
-        setItems(initialItems);
+        console.error('Error fetching items from Supabase, falling back to local cache:', error);
+        setItems(localItems); // GRACEFUL DEGRADATION: Use local cache if offline!
       } else if (data && data.length > 0) {
         setItems(data);
-      } else if (savedItems) {
+      } else if (savedItems && localItems !== initialItems) {
         // Migration logic
         try {
-          const parsed = JSON.parse(savedItems);
           const { data: insertedData, error: insertError } = await supabase.from('items').insert(
-            parsed.map((item: any) => ({
+            localItems.map((item: any) => ({
               name: item.name,
               category: item.category,
               quantity: item.quantity,
@@ -49,10 +49,9 @@ export function useInventory() {
 
           if (insertError) {
             console.error('Migration error:', insertError);
-            setItems(parsed);
+            setItems(localItems);
           } else {
             setItems(insertedData || []);
-            localStorage.removeItem('kitchen-inventory');
           }
         } catch (e) {
           setItems(initialItems);
@@ -65,9 +64,9 @@ export function useInventory() {
     fetchData();
   }, []);
 
-  // Only persist to localStorage when Supabase is NOT configured (offline-first mode)
+  // ALWAYS persist to localStorage as an offline backup!
   useEffect(() => {
-    if (!supabase && items.length > 0) {
+    if (items.length > 0) {
       localStorage.setItem('kitchen-inventory', JSON.stringify(items));
     }
   }, [items]);
