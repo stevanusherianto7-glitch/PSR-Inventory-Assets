@@ -17,13 +17,16 @@
   --delay-150: 150ms;
   --delay-300: 300ms;
 
-  /* Theme Colors */
+  /* Theme Colors - Global CSS variables */
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border-main: #e2e8f0;
 }
+
+/* MANDATORY for Tailwind v4 to respect .dark class on <html> */
+@variant dark (&:where(.dark, .dark *));
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
@@ -41,6 +44,7 @@
   --text-main: #f0f6fc;
   --text-muted: #8b949e;
   --border-main: #30363d;
+  color-scheme: dark;
 }
 
 .delay-150 { animation-delay: 150ms; }
