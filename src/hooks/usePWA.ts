@@ -45,18 +45,33 @@ export function usePWA() {
     };
   }, [deferredPrompt]);
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = () => {
     if (!deferredPrompt) {
       setShowInstallBtn(false);
       return;
     }
+    
+    // Panggil prompt secara sinkron untuk mematuhi aturan gesture keamanan browser
     try {
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`PWA Install Outcome: ${outcome}`);
     } catch (err) {
-      console.error('PWA Prompt Error:', err);
-    } finally {
+      console.error('Failed to trigger prompt:', err);
+    }
+    
+    // Lanjutkan dengan janji asinkron (Promise) secara native
+    if (deferredPrompt.userChoice) {
+      deferredPrompt.userChoice
+        .then((choiceResult: any) => {
+          console.log(`PWA Install Outcome: ${choiceResult.outcome}`);
+        })
+        .catch((err: any) => {
+          console.error('PWA Prompt Error:', err);
+        })
+        .finally(() => {
+          setDeferredPrompt(null);
+          setShowInstallBtn(false);
+        });
+    } else {
       setDeferredPrompt(null);
       setShowInstallBtn(false);
     }
