@@ -19,6 +19,7 @@ export function ExpensesTab({
 
   const handleAdd = () => {
     if (name && amount !== '') {
+      // Apply uppercase at save time, not during typing
       addExpense(name.toUpperCase(), Number(amount));
       setName('');
       setAmount('');
@@ -35,8 +36,8 @@ export function ExpensesTab({
             type="text" 
             placeholder="NAMA PENGELUARAN" 
             value={name}
-            onChange={(e) => setName(e.target.value.toUpperCase())}
-            className="w-full p-4 bg-slate-100 dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-2xl outline-none focus:ring-2 focus:ring-rose-500 uppercase font-black text-sm tracking-wide dark:text-slate-100" 
+            onChange={(e) => setName(e.target.value)}
+            className="input-uppercase w-full p-4 bg-slate-100 dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-2xl outline-none focus:ring-2 focus:ring-rose-500 font-black text-sm tracking-wide dark:text-slate-100" 
           />
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">Rp</span>

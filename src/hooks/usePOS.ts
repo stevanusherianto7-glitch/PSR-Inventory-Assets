@@ -93,7 +93,7 @@ export function usePOS(items: InventoryItem[], setItems: (items: InventoryItem[]
     const change = paymentMethod === 'Tunai' ? (cashReceived - total) : 0;
 
     const newTransaction: Transaction = {
-      id: Math.random().toString(36).substring(2, 11),
+      id: crypto.randomUUID(),
       timestamp: new Date(),
       items: [...cart],
       total,
@@ -135,7 +135,7 @@ export function usePOS(items: InventoryItem[], setItems: (items: InventoryItem[]
 
   const addExpense = async (name: string, amount: number) => {
     const newExpense: Expense = {
-      id: Math.random().toString(36).substring(2, 11),
+      id: crypto.randomUUID(),
       name,
       amount,
       timestamp: new Date()
@@ -155,7 +155,6 @@ export function usePOS(items: InventoryItem[], setItems: (items: InventoryItem[]
     transactions,
     expenses,
     cart,
-    setCart,
     addToCart,
     removeFromCart,
     checkout,

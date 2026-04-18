@@ -169,12 +169,14 @@ export default function App() {
         </div>
       )}
 
-      <ThermalReceipt 
-        currentCart={[]} 
-        lastTransaction={transactions[0]}
-        paymentMethod=""
-        cashReceived={0}
-      />
+      {transactions.length > 0 && (
+        <ThermalReceipt
+          currentCart={[]}
+          lastTransaction={transactions[0]}
+          paymentMethod={transactions[0]?.paymentMethod ?? 'Tunai'}
+          cashReceived={transactions[0]?.cashReceived ?? 0}
+        />
+      )}
 
       {showToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce">

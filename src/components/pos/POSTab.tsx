@@ -8,7 +8,7 @@ interface POSTabProps {
   cart: { id: string; name: string; qty: number; price: number }[];
   addToCart: (item: InventoryItem) => void;
   removeFromCart: (id: string) => void;
-  checkout: (paymentMethod: PaymentMethod, cashReceived: number) => boolean;
+  checkout: (paymentMethod: PaymentMethod, cashReceived: number) => Promise<boolean>;
   onSuccess: () => void;
 }
 
@@ -31,14 +31,14 @@ export function POSTab({
     [items, searchTerm]
   );
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     const total = cart.reduce((sum, item) => sum + (item.qty * item.price), 0);
     if (paymentMethod === 'Tunai' && (Number(cashReceived) < total)) {
       alert('Uang diterima kurang!');
       return;
     }
 
-    const success = checkout(paymentMethod, Number(cashReceived));
+    const success = await checkout(paymentMethod, Number(cashReceived));
     if (success) {
       setCashReceived('');
       onSuccess();

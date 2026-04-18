@@ -65,8 +65,9 @@ export function useInventory() {
     fetchData();
   }, []);
 
+  // Only persist to localStorage when Supabase is NOT configured (offline-first mode)
   useEffect(() => {
-    if (items.length > 0) {
+    if (!supabase && items.length > 0) {
       localStorage.setItem('kitchen-inventory', JSON.stringify(items));
     }
   }, [items]);
