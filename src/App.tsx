@@ -62,12 +62,15 @@ export default function App() {
     handleInstallClick
   } = usePWA();
 
+  const [toastMessage, setToastMessage] = useState('Berhasil!');
+
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
-  const triggerToast = () => {
+  const triggerToast = (msg: string = 'Berhasil!') => {
+    setToastMessage(msg);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
@@ -117,6 +120,7 @@ export default function App() {
             updateQuantity={updateQuantity}
             deleteItem={deleteItem}
             saveEdit={saveEdit}
+            onSuccess={triggerToast}
           />
         )}
 
@@ -182,7 +186,7 @@ export default function App() {
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce">
           <div className="bg-emerald-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
             <Check size={20} />
-            <span className="font-semibold">Berhasil!</span>
+            <span className="font-semibold">{toastMessage}</span>
           </div>
         </div>
       )}

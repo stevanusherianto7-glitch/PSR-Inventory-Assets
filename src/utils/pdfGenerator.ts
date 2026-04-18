@@ -144,5 +144,16 @@ export const savePDF = (items: InventoryItem[]) => {
   const kitchenEndY   = renderTable('Kitchen',  40);
   renderTable('Mini Bar', kitchenEndY + 18);
 
-  doc.save('laporan-inventaris-pawon-salam.pdf');
+  // Menggunakan Blob API untuk kompatibilitas lebih baik di Android PWA
+  const pdfBlob = doc.output('blob');
+  const blobUrl = URL.createObjectURL(pdfBlob);
+  
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = `Laporan_Aset_Resto_${new Date().toISOString().split('T')[0]}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 150);
 };

@@ -12,6 +12,7 @@ interface InventoryTabProps {
   updateQuantity: (id: string, delta: number) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   saveEdit: (id: string, name: string, price: number) => Promise<boolean>;
+  onSuccess?: (msg?: string) => void;
 }
 
 export function InventoryTab({
@@ -21,7 +22,8 @@ export function InventoryTab({
   addItem,
   updateQuantity,
   deleteItem,
-  saveEdit
+  saveEdit,
+  onSuccess
 }: InventoryTabProps) {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -63,6 +65,7 @@ export function InventoryTab({
       setName('');
       setQuantity(1);
       setPrice('');
+      if (onSuccess) onSuccess('Tersimpan');
     }
   };
 
@@ -78,6 +81,7 @@ export function InventoryTab({
     const success = await saveEdit(id, editName.toUpperCase(), Number(editPrice));
     if (success) {
       setEditingId(null);
+      if (onSuccess) onSuccess('Tersimpan');
     }
   };
 
@@ -241,7 +245,10 @@ export function InventoryTab({
                   </button>
                 )}
                 <button
-                  onClick={() => deleteItem(item.id)}
+                  onClick={async () => {
+                    await deleteItem(item.id);
+                    if (onSuccess) onSuccess('Dihapus');
+                  }}
                   className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-full transition-colors"
                   aria-label="Hapus Item"
                 >
