@@ -20,7 +20,7 @@ export const savePDF = (items: InventoryItem[]) => {
   doc.setFont(FONT_FAMILY, 'normal');
   doc.setFontSize(9);
   doc.setTextColor(100, 116, 139); // slate-500
-  doc.text(`InventoriGo  ·  Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`, 14, 27);
+  doc.text(`PSResto  ·  Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`, 14, 27);
 
   // Garis pemisah header
   doc.setDrawColor(226, 232, 240); // slate-200
@@ -127,7 +127,7 @@ export const savePDF = (items: InventoryItem[]) => {
         doc.setFont(FONT_FAMILY, 'italic');
         doc.setFontSize(7);
         doc.setTextColor(148, 163, 184); // slate-400
-        doc.text('InventoriGo - Smart Inventory System', marginLeft, pageH - 9);
+        doc.text('PSResto - Asset Management System', marginLeft, pageH - 9);
 
         // Teks kanan footer (nomor halaman)
         doc.setFont(FONT_FAMILY, 'normal');

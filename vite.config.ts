@@ -14,9 +14,9 @@ export default defineConfig(({mode}) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.png', 'logo-192.png', 'logo-512.png'],
         manifest: {
-          name: 'InventoriGo',
-          short_name: 'InventoriGo',
-          description: 'Sistem Manajemen Inventori Real-time InventoriGo',
+          name: 'PSResto Asset Manager',
+          short_name: 'PSResto',
+          description: 'Sistem Manajemen Inventori Real-time PSResto',
           theme_color: '#FFC107',
           background_color: '#ffffff',
           display: 'standalone',

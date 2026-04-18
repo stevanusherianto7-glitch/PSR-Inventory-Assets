@@ -24,7 +24,7 @@ export function ThermalReceipt({
 
   return (
     <div className="hidden print:block print-receipt animate-in fade-in">
-      <div className="text-center font-black text-[12px] mb-0.5 uppercase tracking-tighter">INVENTORIGO</div>
+      <div className="text-center font-black text-[12px] mb-0.5 uppercase tracking-tighter">PSRESTO</div>
       <div className="text-[7px] text-center mb-1 leading-[1.2] opacity-80 uppercase">
         Jl. Raya Utama No. 88<br/>
         Kec. Purwosari, Pasuruan
